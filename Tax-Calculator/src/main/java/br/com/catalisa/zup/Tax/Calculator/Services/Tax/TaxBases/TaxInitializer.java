@@ -1,8 +1,7 @@
 package br.com.catalisa.zup.Tax.Calculator.Services.TaxBases;
 
-import br.com.catalisa.zup.Tax.Calculator.DTOs.TaxDTO;
+import br.com.catalisa.zup.Tax.Calculator.DTOs.Tax.TaxDTO;
 import br.com.catalisa.zup.Tax.Calculator.Services.TaxService;
-import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
