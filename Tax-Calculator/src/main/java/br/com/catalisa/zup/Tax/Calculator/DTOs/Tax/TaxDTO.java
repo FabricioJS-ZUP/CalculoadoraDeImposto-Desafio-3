@@ -1,14 +1,16 @@
-package br.com.catalisa.zup.Tax.Calculator.DTOs;
+package br.com.catalisa.zup.Tax.Calculator.DTOs.Tax;
 
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-//@Getter
-//@Setter
-@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class TaxDTO {
     private Long id;
 
@@ -25,12 +27,6 @@ public class TaxDTO {
     @DecimalMax(value = "100.0", inclusive = true, message = "The rate cannot be greater than 100.")
     private Double rate;
 
-    public TaxDTO(Long id, String name, String description, Double rate) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.rate = rate;
-    }
 
     public TaxDTO(String name, String description, Double rate) {
         this.name = name;
@@ -38,38 +34,4 @@ public class TaxDTO {
         this.rate = rate;
     }
 
-    public TaxDTO() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Double getRate() {
-        return rate;
-    }
-
-    public void setRate(Double rate) {
-        this.rate = rate;
-    }
 }

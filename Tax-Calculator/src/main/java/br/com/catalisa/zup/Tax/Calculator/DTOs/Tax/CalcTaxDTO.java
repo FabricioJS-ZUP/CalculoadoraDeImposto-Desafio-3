@@ -1,6 +1,12 @@
-package br.com.catalisa.zup.Tax.Calculator.DTOs;
+package br.com.catalisa.zup.Tax.Calculator.DTOs.Tax;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class CalcTaxDTO {
     private String name;
     private String description;
@@ -8,54 +14,4 @@ public class CalcTaxDTO {
     private double baseValue;
     private double taxValue;
 
-    public CalcTaxDTO(String name, String description, double rate, double baseValue, double taxValue) {
-        this.name = name;
-        this.description = description;
-        this.rate = rate;
-        this.baseValue = baseValue;
-        this.taxValue = taxValue;
-    }
-
-    public CalcTaxDTO() {
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public double getRate() {
-        return rate;
-    }
-
-    public void setRate(double rate) {
-        this.rate = rate;
-    }
-
-    public double getBaseValue() {
-        return baseValue;
-    }
-
-    public void setBaseValue(double baseValue) {
-        this.baseValue = baseValue;
-    }
-
-    public double getTaxValue() {
-        return taxValue;
-    }
-
-    public void setTaxValue(double taxValue) {
-        this.taxValue = taxValue;
-    }
 }
