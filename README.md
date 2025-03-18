@@ -25,17 +25,15 @@
 ```
 
 - 8° After this, take the token that was given in the previous section and in all the next requests you will have to put it like this: (after the Bearer you have to put your token)
-    
-    ![image.png](attachment:bb2484f1-d0e2-49b6-8a77-8b53dbf9fbc0:image.png)
-    
+    ![Captura de tela 2025-03-18 094141](https://github.com/user-attachments/assets/7ca27096-3197-4599-9790-1a5490a15894)
+
 - 9° Now to see the taxes you can:
-    - 1**° See all taxes (GET):**  http://localhost:8080/impostos
+- 9.1° See all taxes (GET): http://localhost:8080/impostos      
+        ![Captura de tela 2025-03-18 095150](https://github.com/user-attachments/assets/65aa7aaa-1950-4263-a031-ee5c98eca348)
         
-        ![image.png](attachment:51457b63-59f8-4262-960b-c9427cac00d7:image.png)
-        
-        - 2**° View by id**
-            
-            ![image.png](attachment:960e1de2-1bac-4b1f-af20-02cd9d54b8af:image.png)
+ - 9.2° View by id (GET): http://localhost:8080/impostos/2
+         ![Captura de tela 2025-03-18 095358](https://github.com/user-attachments/assets/31e12418-b00d-44e3-9c9b-2783e335c73e)
+
             
 - **10° To create a tax go to** http://localhost:8080/impostos (POST)
 ![image](https://github.com/user-attachments/assets/a3883c4b-9eea-4903-929d-c46c57bdb9b2)
