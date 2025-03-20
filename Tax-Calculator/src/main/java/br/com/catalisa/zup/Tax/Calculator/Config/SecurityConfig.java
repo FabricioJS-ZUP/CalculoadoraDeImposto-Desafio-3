@@ -29,11 +29,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/impostos").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/impostos/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/impostos/calculo").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/impostos/**").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.GET, "/impostos/**").hasAnyRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/user/**"))
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/user/**","/impostos/**"))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

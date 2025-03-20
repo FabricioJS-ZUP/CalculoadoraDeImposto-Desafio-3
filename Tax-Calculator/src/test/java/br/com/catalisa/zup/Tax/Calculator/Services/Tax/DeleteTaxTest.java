@@ -1,16 +1,15 @@
 package br.com.catalisa.zup.Tax.Calculator.Services.Tax;
-
 import br.com.catalisa.zup.Tax.Calculator.Repository.TaxRepository;
-import org.junit.jupiter.api.Assertions;
+import br.com.catalisa.zup.Tax.Calculator.Services.Tax.DeleteTax;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 
+import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
-@ExtendWith(MockitoExtension.class)
+
 class DeleteTaxTest {
 
     @Mock
@@ -19,29 +18,60 @@ class DeleteTaxTest {
     @InjectMocks
     private DeleteTax deleteTax;
 
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
     @Test
-    void testDeleteTax_Success() {
+    void testDeleteTaxSuccess() {
         // Arrange
         Long taxId = 1L;
-        Mockito.when(taxRepository.existsById(taxId)).thenReturn(true);
+        when(taxRepository.existsById(taxId)).thenReturn(true);
 
         // Act
         deleteTax.deleteTax(taxId);
 
         // Assert
-        Mockito.verify(taxRepository, Mockito.times(1)).deleteById(taxId);
+        verify(taxRepository, times(1)).existsById(taxId);
+        verify(taxRepository, times(1)).deleteById(taxId);
     }
 
     @Test
-    void testDeleteTax_TaxNotFound() {
+    void testDeleteTaxNotFound() {
         // Arrange
         Long taxId = 1L;
-        Mockito.when(taxRepository.existsById(taxId)).thenReturn(false);
+        when(taxRepository.existsById(taxId)).thenReturn(false);
 
         // Act & Assert
-        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            deleteTax.deleteTax(taxId);
-        });
-        Assertions.assertEquals("Tax not find", exception.getMessage());
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> deleteTax.deleteTax(taxId));
+        assertEquals("Tax not find", exception.getMessage());
+
+        verify(taxRepository, times(1)).existsById(taxId);
+        verify(taxRepository, never()).deleteById(anyLong());
+    }
+
+    @Test
+    void testDeleteTaxWithNullId() {
+        // Act & Assert
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> deleteTax.deleteTax(null));
+        assertEquals("Tax ID cannot be null", exception.getMessage());
+
+        verify(taxRepository, never()).existsById(any());
+        verify(taxRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void testDeleteTaxWithNonExistentId() {
+        // Arrange
+        Long taxId = 999L;
+        when(taxRepository.existsById(taxId)).thenReturn(false);
+
+        // Act & Assert
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> deleteTax.deleteTax(taxId));
+        assertEquals("Tax not find", exception.getMessage());
+
+        verify(taxRepository, times(1)).existsById(taxId);
+        verify(taxRepository, never()).deleteById(anyLong());
     }
 }

@@ -1,20 +1,19 @@
 package br.com.catalisa.zup.Tax.Calculator.Services.Tax;
-
 import br.com.catalisa.zup.Tax.Calculator.DTOs.Tax.CalcTaxDTO;
 import br.com.catalisa.zup.Tax.Calculator.Models.Tax;
 import br.com.catalisa.zup.Tax.Calculator.Repository.TaxRepository;
-import org.junit.jupiter.api.Assertions;
+import br.com.catalisa.zup.Tax.Calculator.Services.Tax.CalcTax;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
 
-
-@ExtendWith(MockitoExtension.class)
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 class CalcTaxTest {
 
     @Mock
@@ -23,35 +22,48 @@ class CalcTaxTest {
     @InjectMocks
     private CalcTax calcTax;
 
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
     @Test
-    void testCalculateTax_Success() {
+    void testCalculateTaxSuccess() {
         // Arrange
         Long taxId = 1L;
-        double baseValue = 100.0;
-        Tax tax = new Tax(taxId, "VAT", "Value Added Tax", 10.0);
-        Mockito.when(taxRepository.findById(taxId)).thenReturn(Optional.of(tax));
+        double baseValue = 1000.0;
+        Tax tax = new Tax();
+        tax.setId(taxId);
+        tax.setName("ICMS");
+        tax.setDescription("Tax on Transactions");
+        tax.setRate(18.0);
+
+        when(taxRepository.findById(taxId)).thenReturn(Optional.of(tax));
 
         // Act
         CalcTaxDTO result = calcTax.calculateTax(taxId, baseValue);
 
         // Assert
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals("VAT", result.getName());
-        Assertions.assertEquals(10.0, result.getRate());
-        Assertions.assertEquals(10.0, result.getTaxValue());
+        assertNotNull(result);
+        assertEquals("ICMS", result.getName());
+        assertEquals("Tax on Transactions", result.getDescription());
+        assertEquals(18.0, result.getRate());
+        assertEquals(baseValue, result.getBaseValue());
+        assertEquals(180.0, result.getTaxValue()); // 18% of 1000.0
+        verify(taxRepository, times(1)).findById(taxId);
     }
 
     @Test
-    void testCalculateTax_TaxNotFound() {
+    void testCalculateTaxNotFound() {
         // Arrange
         Long taxId = 1L;
-        double baseValue = 100.0;
-        Mockito.when(taxRepository.findById(taxId)).thenReturn(Optional.empty());
+        double baseValue = 1000.0;
+
+        when(taxRepository.findById(taxId)).thenReturn(Optional.empty());
 
         // Act & Assert
-        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            calcTax.calculateTax(taxId, baseValue);
-        });
-        Assertions.assertEquals("Tax with ID 1 not found.", exception.getMessage());
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> calcTax.calculateTax(taxId, baseValue));
+        assertEquals("Tax with ID " + taxId + " not found.", exception.getMessage());
+        verify(taxRepository, times(1)).findById(taxId);
     }
 }
