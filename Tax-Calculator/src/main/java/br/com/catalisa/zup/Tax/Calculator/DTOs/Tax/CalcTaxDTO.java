@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class CalcTaxDTO {
     private String name;
-    private String description;
-    private double rate;
     private double baseValue;
+    private double rate;
     private double taxValue;
-
 }

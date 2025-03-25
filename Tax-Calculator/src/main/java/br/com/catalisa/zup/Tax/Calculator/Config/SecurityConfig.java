@@ -29,7 +29,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/impostos").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/impostos/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/impostos/calculo").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/impostos/**").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/impostos/**").hasAnyRole("ADMIN","USER")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

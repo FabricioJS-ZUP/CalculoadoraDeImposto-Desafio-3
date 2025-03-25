@@ -1,6 +1,8 @@
 package br.com.catalisa.zup.Tax.Calculator.Models;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,17 +24,21 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(nullable = false, unique = true)
+    @NotNull(message = "The username cannot be null.")
     private String username;
 
     @Column(nullable = false)
+    @NotNull(message = "The password cannot be null.")
     private String password;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "The Role cannot be null.")
     private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(() -> "ROLE_" + role.name());
+        return List.of(() -> "ROLE_" + role.name().toUpperCase());
     }
 
     @Override

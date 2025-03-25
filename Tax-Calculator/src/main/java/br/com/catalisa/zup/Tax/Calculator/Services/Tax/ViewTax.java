@@ -1,6 +1,7 @@
 package br.com.catalisa.zup.Tax.Calculator.Services.Tax;
 
 import br.com.catalisa.zup.Tax.Calculator.DTOs.Tax.TaxDTO;
+import br.com.catalisa.zup.Tax.Calculator.Exceptions.ResourceNotFoundException;
 import br.com.catalisa.zup.Tax.Calculator.Models.Tax;
 import br.com.catalisa.zup.Tax.Calculator.Repository.TaxRepository;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,7 @@ public class ViewTax {
 
     public TaxDTO getTaxById(Long id) {
         Tax tax = taxRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Tax not find"));
+                .orElseThrow(() -> new ResourceNotFoundException("Tax not found with ID: " + id));
         return new TaxDTO(tax.getId(), tax.getName(), tax.getDescription(), tax.getRate());
     }
 }

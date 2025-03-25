@@ -1,19 +1,21 @@
 package br.com.catalisa.zup.Tax.Calculator.Services.Tax;
 import br.com.catalisa.zup.Tax.Calculator.DTOs.Tax.CalcTaxDTO;
+import br.com.catalisa.zup.Tax.Calculator.Exceptions.BadRequestException;
 import br.com.catalisa.zup.Tax.Calculator.Models.Tax;
 import br.com.catalisa.zup.Tax.Calculator.Repository.TaxRepository;
-import br.com.catalisa.zup.Tax.Calculator.Services.Tax.CalcTax;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+@ExtendWith(MockitoExtension.class)
+@DisplayName("Tests for CalcTax Service")
+@ActiveProfiles("test")
 class CalcTaxTest {
 
     @Mock
@@ -22,48 +24,50 @@ class CalcTaxTest {
     @InjectMocks
     private CalcTax calcTax;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    @Nested
+    @DisplayName("Positive Scenarios")
+    class PositiveScenarios {
+
+        @Test
+        @DisplayName("It should calculate the tax successfully")
+        void shouldCalculateTaxSuccessfully() {
+            // Arrange
+            Long taxId = 1L;
+            double baseValue = 100.0;
+            Tax tax = new Tax(taxId, "Tax Name", "Tax Description", 10.0);
+
+            Mockito.when(taxRepository.findById(taxId)).thenReturn(Optional.of(tax));
+
+            // Act
+            CalcTaxDTO result = calcTax.calculateTax(taxId, baseValue);
+
+            // Assert
+            Assertions.assertNotNull(result);
+            Assertions.assertEquals("Tax Name", result.getName());
+            Assertions.assertEquals(100.0, result.getBaseValue());
+            Assertions.assertEquals(10.0, result.getRate());
+            Assertions.assertEquals(10.0, result.getTaxValue());
+            Mockito.verify(taxRepository, Mockito.times(1)).findById(taxId);
+        }
     }
 
-    @Test
-    void testCalculateTaxSuccess() {
-        // Arrange
-        Long taxId = 1L;
-        double baseValue = 1000.0;
-        Tax tax = new Tax();
-        tax.setId(taxId);
-        tax.setName("ICMS");
-        tax.setDescription("Tax on Transactions");
-        tax.setRate(18.0);
+    @Nested
+    @DisplayName("Negative Scenarios")
+    class NegativeScenarios {
 
-        when(taxRepository.findById(taxId)).thenReturn(Optional.of(tax));
+        @Test
+        @DisplayName("Should throw exception when calculating tax with non-existent ID")
+        void shouldThrowExceptionWhenTaxIdNotFound() {
+            // Arrange
+            Long taxId = 1L;
+            double baseValue = 100.0;
 
-        // Act
-        CalcTaxDTO result = calcTax.calculateTax(taxId, baseValue);
+            Mockito.when(taxRepository.findById(taxId)).thenReturn(Optional.empty());
 
-        // Assert
-        assertNotNull(result);
-        assertEquals("ICMS", result.getName());
-        assertEquals("Tax on Transactions", result.getDescription());
-        assertEquals(18.0, result.getRate());
-        assertEquals(baseValue, result.getBaseValue());
-        assertEquals(180.0, result.getTaxValue()); // 18% of 1000.0
-        verify(taxRepository, times(1)).findById(taxId);
-    }
-
-    @Test
-    void testCalculateTaxNotFound() {
-        // Arrange
-        Long taxId = 1L;
-        double baseValue = 1000.0;
-
-        when(taxRepository.findById(taxId)).thenReturn(Optional.empty());
-
-        // Act & Assert
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> calcTax.calculateTax(taxId, baseValue));
-        assertEquals("Tax with ID " + taxId + " not found.", exception.getMessage());
-        verify(taxRepository, times(1)).findById(taxId);
+            // Act & Assert
+            BadRequestException exception = Assertions.assertThrows(BadRequestException.class, () -> calcTax.calculateTax(taxId, baseValue));
+            Assertions.assertEquals("Tax with ID " + taxId + " not found!", exception.getMessage());
+            Mockito.verify(taxRepository, Mockito.times(1)).findById(taxId);
+        }
     }
 }

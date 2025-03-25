@@ -42,12 +42,13 @@ public class Tax {
         this.rate = rate;
     }
 
-    public Tax(String name, double baseValue, double rate, double taxValue) {
+    public Tax(String name,double baseValue,double rate,  double taxValue) {
         this.name = name;
         this.baseValue = baseValue;
         this.rate = rate;
         this.taxValue = taxValue;
     }
+
 
     public Tax(String name, String description, double rate) {
         this.name = name;

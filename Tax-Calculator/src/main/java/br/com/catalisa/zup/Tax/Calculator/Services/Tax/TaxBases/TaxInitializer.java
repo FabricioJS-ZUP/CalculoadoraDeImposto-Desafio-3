@@ -13,7 +13,6 @@ public class TaxInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Criando os impostos base
         TaxDTO icms = new TaxDTO();
         icms.setName("ICMS");
         icms.setDescription("Tax on Transactions relating to the Circulation of Goods and on Transport Services");
