@@ -1,4 +1,4 @@
-package br.com.catalisa.zup.Tax.Calculator.config;
+package br.com.catalisa.zup.Tax.Calculator.Config;
 
 import br.com.catalisa.zup.Tax.Calculator.Services.User.JwtService;
 import br.com.catalisa.zup.Tax.Calculator.Services.User.UserDetailsServiceImpl;
