@@ -1,10 +1,7 @@
 package br.com.catalisa.zup.Tax.Calculator.Models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Table(name = "Tax")
@@ -18,12 +15,12 @@ public class Tax {
     long id;
 
     @Size(min = 1, max = 20, message = "The name must be between 1 and 20 characters long.")
-    @NotNull(message = "The name cannot be null.")
+    @NotBlank(message = "The name cannot be null.")
     String name;
 
     @Column(nullable = false, length = 100)
     @Size(min = 1, max = 100, message = "The description must be between 1 and 100 characters long.")
-    @NotNull(message = "Description cannot be null.")
+   @NotBlank(message = "Description cannot be null.")
     String description;
 
     @Column(nullable = false)
