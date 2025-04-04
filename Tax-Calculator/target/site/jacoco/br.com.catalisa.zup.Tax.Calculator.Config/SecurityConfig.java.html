@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SecurityConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tax-Calculator</a> &gt; <a href="index.source.html" class="el_package">br.com.catalisa.zup.Tax.Calculator.Config</a> &gt; <span class="el_source">SecurityConfig.java</span></div><h1>SecurityConfig.java</h1><pre class="source lang-java linenums">package br.com.catalisa.zup.Tax.Calculator.Config;
+
+import br.com.catalisa.zup.Tax.Calculator.Services.User.UserDetailsServiceImpl;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+@Configuration
+<span class="fc" id="L21">@RequiredArgsConstructor</span>
+public class SecurityConfig {
+
+    private final UserDetailsServiceImpl userDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    //This separate configuration is used to ensure that the swagger does not hit the protection layer, thus facilitating the maintenance and security of the project.
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer(){
+<span class="fc" id="L30">        return web -&gt; web.ignoring().requestMatchers(</span>
+                &quot;/v2/api-docs/**&quot;,
+                &quot;/v3/api-docs/**&quot;,
+                &quot;/swagger-resources/**&quot;,
+                &quot;/swagger-ui.html&quot;,
+                &quot;/swagger-ui/**&quot;,
+                &quot;/webjars/**&quot;,
+                &quot;/api-docs/**&quot;,
+                &quot;/swagger-ui-custom.html&quot;
+        );
+    }
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+<span class="fc" id="L43">        http</span>
+<span class="fc" id="L44">                .authorizeHttpRequests(auth -&gt; auth</span>
+<span class="fc" id="L45">                        .requestMatchers(&quot;/user/login&quot;, &quot;/user/register&quot;).permitAll()</span>
+<span class="fc" id="L46">                        .requestMatchers(HttpMethod.POST, &quot;/impostos&quot;).hasRole(&quot;ADMIN&quot;)</span>
+<span class="fc" id="L47">                        .requestMatchers(HttpMethod.DELETE, &quot;/impostos/**&quot;).hasRole(&quot;ADMIN&quot;)</span>
+<span class="fc" id="L48">                        .requestMatchers(HttpMethod.POST, &quot;/impostos/calculo&quot;).hasRole(&quot;ADMIN&quot;)</span>
+<span class="fc" id="L49">                        .requestMatchers(HttpMethod.GET, &quot;/impostos/**&quot;).hasAnyRole(&quot;ADMIN&quot;,&quot;USER&quot;)</span>
+<span class="fc" id="L50">                        .anyRequest().authenticated()</span>
+                )
+<span class="fc" id="L52">                .sessionManagement(session -&gt; session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))</span>
+<span class="fc" id="L53">                .csrf(csrf -&gt; csrf.ignoringRequestMatchers(&quot;/user/**&quot;,&quot;/impostos/**&quot;))</span>
+<span class="fc" id="L54">                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);</span>
+<span class="fc" id="L55">        return http.build();</span>
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+<span class="fc" id="L60">        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();</span>
+<span class="fc" id="L61">        provider.setUserDetailsService(userDetailsService);</span>
+<span class="fc" id="L62">        provider.setPasswordEncoder(passwordEncoder());</span>
+<span class="fc" id="L63">        return provider;</span>
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+<span class="fc" id="L68">        return new BCryptPasswordEncoder();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

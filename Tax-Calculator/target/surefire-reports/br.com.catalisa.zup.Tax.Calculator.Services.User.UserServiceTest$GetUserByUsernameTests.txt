@@ -1,0 +1,15 @@
+-------------------------------------------------------------------------------
+Test set: br.com.catalisa.zup.Tax.Calculator.Services.User.UserServiceTest$GetUserByUsernameTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.024 s <<< FAILURE! - in br.com.catalisa.zup.Tax.Calculator.Services.User.UserServiceTest$GetUserByUsernameTests
+br.com.catalisa.zup.Tax.Calculator.Services.User.UserServiceTest$GetUserByUsernameTests.shouldReturnUserWhenUsernameExists  Time elapsed: 0.015 s  <<< ERROR!
+org.springframework.security.core.userdetails.UsernameNotFoundException: User not find
+	at br.com.catalisa.zup.Tax.Calculator.Services.User.UserService.lambda$getUserByUsername$0(UserService.java:17)
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403)
+	at br.com.catalisa.zup.Tax.Calculator.Services.User.UserService.getUserByUsername(UserService.java:17)
+	at br.com.catalisa.zup.Tax.Calculator.Services.User.UserServiceTest$GetUserByUsernameTests.shouldReturnUserWhenUsernameExists(UserServiceTest.java:57)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+

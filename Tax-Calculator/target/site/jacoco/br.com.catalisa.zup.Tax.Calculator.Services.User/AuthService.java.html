@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tax-Calculator</a> &gt; <a href="index.source.html" class="el_package">br.com.catalisa.zup.Tax.Calculator.Services.User</a> &gt; <span class="el_source">AuthService.java</span></div><h1>AuthService.java</h1><pre class="source lang-java linenums">package br.com.catalisa.zup.Tax.Calculator.Services.User;
+
+import br.com.catalisa.zup.Tax.Calculator.DTOs.User.AuthRequest;
+import br.com.catalisa.zup.Tax.Calculator.DTOs.User.RegisterRequest;
+import br.com.catalisa.zup.Tax.Calculator.Exceptions.BadRequestException;
+import br.com.catalisa.zup.Tax.Calculator.Models.Role;
+import br.com.catalisa.zup.Tax.Calculator.Models.User;
+import br.com.catalisa.zup.Tax.Calculator.Repository.UserRepository;
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotNull;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@Service
+<span class="fc" id="L17">@RequiredArgsConstructor</span>
+public class AuthService {
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final UserDetailsServiceImpl userDetailsService;
+
+
+    public User registerUser(RegisterRequest request) {
+<span class="fc" id="L27">        User user = User.builder()</span>
+<span class="fc" id="L28">                .username(request.getUsername())</span>
+<span class="fc" id="L29">                .password(passwordEncoder.encode(request.getPassword()))</span>
+<span class="fc" id="L30">                .role(request.getRole())</span>
+<span class="fc" id="L31">                .build();</span>
+
+<span class="fc" id="L33">        return userRepository.save(user);</span>
+    }
+
+    public String authenticate(AuthRequest request) {
+<span class="fc" id="L37">        User user = (User) userDetailsService.loadUserByUsername(request.getUsername());</span>
+
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {</span>
+<span class="fc" id="L40">            throw new BadRequestException(&quot;Invalid password for User: &quot; + user.getUsername() + &quot;!&quot;);</span>
+        }
+<span class="fc" id="L42">        return jwtService.generateToken(user.getUsername(), user.getRole().name());</span>
+
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TaxController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tax-Calculator</a> &gt; <a href="index.source.html" class="el_package">br.com.catalisa.zup.Tax.Calculator.Controllers.Tax</a> &gt; <span class="el_source">TaxController.java</span></div><h1>TaxController.java</h1><pre class="source lang-java linenums">package br.com.catalisa.zup.Tax.Calculator.Controllers.Tax;
+
+import br.com.catalisa.zup.Tax.Calculator.DTOs.Tax.CalcTaxDTO;
+import br.com.catalisa.zup.Tax.Calculator.DTOs.Tax.TaxDTO;
+import br.com.catalisa.zup.Tax.Calculator.Services.Tax.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.Tags;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping(&quot;/impostos&quot;)
+@Tag(name = &quot;Impostos&quot;)
+<span class="fc" id="L22">@AllArgsConstructor</span>
+public class TaxController {
+    private final DeleteTax deleteTax;
+    private final ViewTax viewTax;
+    private final CreateTax createTax;
+    private final CalcTax calcTax;
+
+    @PostMapping
+    @Operation(summary =&quot;Criar imposto&quot;, description = &quot;Criar um novo imposto&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;201&quot;,description = &quot;Imposto criado&quot;),
+            @ApiResponse(responseCode = &quot;403&quot;,description = &quot;Você não tem a autoridade para acessar esta funcionalidade&quot;)
+    })
+    public ResponseEntity&lt;TaxDTO&gt; addTax(@RequestBody TaxDTO taxDTO) {
+<span class="fc" id="L36">        return ResponseEntity.status(201).body(createTax.addTax(taxDTO));</span>
+    }
+
+    @GetMapping
+    @Operation(summary =&quot;Ver todos os impostos&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;200&quot;,description = &quot;Vizualizado com sucesso&quot;),
+    })
+    public ResponseEntity&lt;List&lt;TaxDTO&gt;&gt; getAllTaxes() {
+<span class="fc" id="L45">        return ResponseEntity.ok(viewTax.getAllTaxes());</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    @Operation(summary =&quot;Ver imposto ´por id&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;200&quot;,description = &quot;Vizualizado com sucesso&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;,description = &quot;Não conseguimos encontrar o ID selecionado&quot;)
+    })
+    public ResponseEntity&lt;TaxDTO&gt; getTaxById(@PathVariable Long id) {
+<span class="fc" id="L55">        return ResponseEntity.ok(viewTax.getTaxById(id));</span>
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    @Operation(summary =&quot;Deletar imposto por id&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;204&quot;,description = &quot;Vizualizado com sucesso&quot;),
+            @ApiResponse(responseCode = &quot;400&quot;,description = &quot;Você não inseriu o id&quot;),
+            @ApiResponse(responseCode = &quot;403&quot;,description = &quot;Você não tem a autoridade para acessar esta funcionalidade&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;,description = &quot;Não encontramos um imposto com este id&quot;)
+    })
+    public ResponseEntity&lt;Void&gt; deleteTax(@PathVariable Long id) {
+<span class="fc" id="L67">        deleteTax.deleteTax(id);</span>
+<span class="fc" id="L68">        return ResponseEntity.noContent().build();</span>
+    }
+
+        @PostMapping(&quot;/calculo&quot;)
+        @Operation(summary =&quot;Calcular taxa&quot;)
+        @ApiResponses({
+                @ApiResponse(responseCode = &quot;200&quot;,description = &quot;Calculado com sucesso&quot;),
+                @ApiResponse(responseCode = &quot;400&quot;,description = &quot;Imposto escolhido não encontrado&quot;),
+                @ApiResponse(responseCode = &quot;403&quot;,description = &quot;Você não tem a autoridade para acessar esta funcionalidade&quot;)
+        })
+        public ResponseEntity&lt;CalcTaxDTO&gt; calculateTax(@RequestBody Map&lt;String, Object&gt; request) {
+<span class="nc" id="L79">        Long id = Long.valueOf(request.get(&quot;id&quot;).toString());</span>
+<span class="nc" id="L80">        double baseValue = Double.valueOf(request.get(&quot;baseValue&quot;).toString());</span>
+        try {
+<span class="nc" id="L82">            CalcTaxDTO taxDTO = calcTax.calculateTax(id, baseValue);</span>
+<span class="nc" id="L83">            return ResponseEntity.ok(taxDTO);</span>
+<span class="nc" id="L84">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L85">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

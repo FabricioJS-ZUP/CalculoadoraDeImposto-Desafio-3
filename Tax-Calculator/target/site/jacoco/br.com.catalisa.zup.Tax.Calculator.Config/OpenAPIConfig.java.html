@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OpenAPIConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tax-Calculator</a> &gt; <a href="index.source.html" class="el_package">br.com.catalisa.zup.Tax.Calculator.Config</a> &gt; <span class="el_source">OpenAPIConfig.java</span></div><h1>OpenAPIConfig.java</h1><pre class="source lang-java linenums">package br.com.catalisa.zup.Tax.Calculator.Config;
+
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@OpenAPIDefinition(
+        info = @Info(
+                title = &quot;Calculador de Impostos&quot;,
+                version = &quot;V2 - em desenvolvimento&quot;,
+                contact = @Contact(
+                        name = &quot;Fabrício&quot;,
+                        email = &quot;fabricio.sullivan@zup.com.br&quot;
+                ),
+                description = &quot;Este projeto foi do curso de formação do Catalisa (ZUP) [Imagem da logo da ZUP](https://zup.com.br/wp-content/uploads/2021/03/zup-logo-1-e1626185300293.jpg)&quot; // Adicione o link aqui
+        ),
+        security = {
+                @SecurityRequirement(name = &quot;bearerAuth&quot;)
+        })
+@SecurityScheme(
+        name = &quot;bearerAuth&quot;,
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = &quot;JWT&quot;,
+        scheme = &quot;bearer&quot;,
+        in = SecuritySchemeIn.HEADER
+)
+<span class="fc" id="L33">public class OpenAPIConfig {</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
