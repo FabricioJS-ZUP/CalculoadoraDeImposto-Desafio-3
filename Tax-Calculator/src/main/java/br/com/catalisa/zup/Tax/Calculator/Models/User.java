@@ -34,7 +34,7 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "The Role cannot be null.")
+    @NotNull(message = "The Role cannot be null.")
     private Role role;
 
     @Override
